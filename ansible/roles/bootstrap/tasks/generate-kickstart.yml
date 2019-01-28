@@ -1,0 +1,7 @@
+---
+
+- name: "Generate kickstart file"
+  delegate_to: "localhost"
+  template:
+    src: "kickstart.cfg.j2"
+    dest: "{{ playbook_dir }}/../kickstart/{{ inventory_hostname }}.ks.cfg"

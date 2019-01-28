@@ -1,0 +1,54 @@
+---
+# Install tls certificate using let's encrypt and certbot-2
+# and triggers automatic renew
+# Removing the said certificate and it's associated cron/timer task
+# IS NOT SUPPORTED
+
+
+- name: "Install Certbot"
+  loop:
+    - certbot
+    - python2-certbot-nginx
+  package:
+    name: "{{ item }}"
+    state: "present"
+
+- name: "Check that Nginx is listening on port 80"
+  shell: "ss -tlnp 'sport = :80' | tail -n +2 | awk '{print $6;}' | grep nginx"
+  register: listening_process
+  changed_when: False
+  failed_when: listening_process.stdout_lines | length == 0
+
+- name: "Request certificates with certbot-2"
+  loop: "{{ domains }}"
+  shell: "certbot -n certonly --nginx {{ dry_run_option }} -m {{ item.holder }} --agree-to --domains {{ ([item.main]) | union(item.subs) | join(',') }}"
+  register: certbot_results
+  changed_when: "'Certificate not yet due for renewal; no action taken.' not in certbot_results.stdout_lines"
+
+- name: "Open port 443 in firewall"
+  firewalld:
+    immediate: yes
+    permanent: yes
+    service: "https"
+    state: enabled
+
+- name: "Set only authentication with renew command"
+  loop: "{{ domains }}"
+  lineinfile:
+    path: "/etc/letsencrypt/renewal/{{ item.main }}.conf"
+    regexp: "^installer ="
+    line: "installer = None"
+
+- name: "Add cron for automatic renew"
+  systemd:
+    name: "certbot-renew.timer"
+    state: "started"
+    enabled: yes
+
+#- name: "Enable nginx.conf TLS server"
+#  replace:
+#    path: "/etc/nginx/nginx.conf"
+#    regexp: '^#(    .*|)$'
+#    replace: '\1'
+#    backup: yes
+#  notify: reload nginx

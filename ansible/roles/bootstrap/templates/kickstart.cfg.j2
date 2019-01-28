@@ -1,0 +1,60 @@
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+
+# Use cdrom installation media
+cdrom
+# use official repo to install required packages
+repo --name="CentOS" --baseurl="http://mirror.centos.org/centos/7/os/x86_64/"
+
+# Use text install
+text
+
+# Keyboard layouts
+keyboard --vckeymap=us --xlayouts='us'
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --bootproto=dhcp --device=eth0 --ipv6=auto --activate
+network  --hostname={{ inventory_hostname }}
+
+# Root password
+rootpw --iscrypted {{ host_passwords.root | password_hash('sha512_crypt') }}
+# System timezone
+timezone Europe/Amsterdam --isUtc
+
+ignoredisk --only-use=vda
+# User autopartitioner
+autopart --type=lvm
+# Partition clearing information
+clearpart --all --initlabel --drives=vda
+
+# System bootloader configuration
+bootloader --location=mbr --boot-drive=vda --iscrypted --password={{ host_passwords.grub | password_hash('grub_pbkdf2_sha512') }}
+
+# System services
+services --enabled="chronyd"
+
+# Reboot after install
+shutdown
+
+%packages
+@^minimal
+@core
+chrony
+policycoreutils-python
+yum-utils
+setroubleshoot-server
+
+%end
+
+%addon com_redhat_kdump --disable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end

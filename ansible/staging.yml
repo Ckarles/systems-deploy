@@ -1,0 +1,19 @@
+---
+all:
+  vars:
+
+    # do not actually request tls certificates
+    tls_dry_run: "yes"
+
+  children:
+    webservers:
+      hosts:
+        satrapy:
+
+    mailservers:
+      hosts:
+        satrapy:
+
+  hosts:
+    satrapy:
+      ansible_host: "satrapy.kingdom"

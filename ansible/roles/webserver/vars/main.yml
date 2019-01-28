@@ -1,0 +1,4 @@
+---
+
+# if tls_dry_run is defined and != "no", dry-run tls cert requests
+dry_run_option: "{{ '--dry-run' if (tls_dry_run is defined and tls_dry_run != 'no') else '' }}"

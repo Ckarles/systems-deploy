@@ -1,0 +1,10 @@
+---
+
+- name: "install utilities"
+  import_tasks: install-utils.yml
+  tags: ['utils']
+
+- name: "Update the system"
+  import_tasks: update.yml
+  tags: ['update']
+

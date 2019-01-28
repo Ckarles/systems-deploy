@@ -1,0 +1,9 @@
+---
+#
+# Global variables applicable to any inventory
+
+# until python3 becomes the default, use python2
+#ansible_python_interpreter: "/usr/bin/python3"
+
+# default ssh port
+ansible_port: 2222

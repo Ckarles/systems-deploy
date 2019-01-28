@@ -1,0 +1,10 @@
+---
+#
+# domains:
+#   - main: "example.com"
+#     holder: "admin@example.com"
+#     subs:
+#       - "www.example.com"
+#       - "mail.example.com"
+
+domains: "{{ vault_domains }}"

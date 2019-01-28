@@ -1,0 +1,10 @@
+---
+
+- name: reboot
+  reboot:
+
+- name: restart services
+  loop: "{{ services_to_restart.stdout_lines }}"
+  service:
+    name: "{{ item }}"
+    state: restarted

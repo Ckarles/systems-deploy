@@ -1,0 +1,17 @@
+---
+
+- name: "Install nginx"
+  package:
+    name: "nginx"
+    state: "present"
+
+- name: "Start and enable nginx"
+  systemd:
+    name: "nginx"
+    state: "started"
+    enabled: yes
+
+- name: "Open http port on firewall"
+  firewalld:
+    service: "http"
+    state: enabled

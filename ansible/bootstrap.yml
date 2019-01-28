@@ -1,0 +1,12 @@
+---
+
+- hosts: "{{ hosts | default('all') }}"
+  roles:
+    - bootstrap
+  gather_facts: no
+  vars_prompt:
+    - name: "user_passwd"
+      prompt: "password of new user {{ user_name }}"
+      private: yes
+      encrypt: "sha512_crypt"
+      confirm: yes
