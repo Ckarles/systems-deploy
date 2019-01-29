@@ -103,6 +103,13 @@
       regexp: "^PasswordAuthentication"
       line: "PasswordAuthentication no"
 
+  - name: "Allow login for @wheel group only"
+    blockinfile:
+      path: "/etc/ssh/sshd_config"
+      marker: "# {mark} Allow access to certain group only"
+      block: |
+        AllowGroups wheel
+
   - name: Disable root login
     lineinfile:
       path: /etc/ssh/sshd_config
