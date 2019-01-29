@@ -9,4 +9,5 @@
     - "vim"
     - "screen"
     - "bash-completion"
+    - "rsync"
 
