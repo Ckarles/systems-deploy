@@ -15,3 +15,5 @@
   firewalld:
     service: "http"
     state: enabled
+    immediate: yes
+    permanent: yes
