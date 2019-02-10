@@ -1,0 +1,10 @@
+---
+
+- name: "Set up postfix"
+  import_tasks: postfix.yml
+  tags: ['postfix']
+ 
+- name: "Set up dovecot"
+  import_tasks: dovecot.yml
+  tags: ['dovecot']
+

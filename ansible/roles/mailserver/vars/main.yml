@@ -1,0 +1,3 @@
+---
+
+mail_domain: "mail.{{ domains[0].main }}"

@@ -1,0 +1,7 @@
+---
+
+- hosts: mailservers
+  become: yes
+  roles:
+    - common
+    - mailserver
