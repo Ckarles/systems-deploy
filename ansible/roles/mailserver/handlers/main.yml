@@ -13,3 +13,8 @@
   service:
     name: "dovecot"
     state: "reloaded"
+
+- name: "restart opendkim"
+  service:
+    name: "opendkim"
+    state: "restarted"

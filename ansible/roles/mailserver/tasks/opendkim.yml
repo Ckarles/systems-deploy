@@ -1,0 +1,75 @@
+---
+
+- name: "Install opendkim"
+  package:
+    state: "present"
+    name: "opendkim"
+
+- name: "Check if a dkim key is already existing"
+  stat:
+    path: "/etc/opendkim/keys/mail.private"
+  register: keycheck_result
+
+- name: "Generate dkim key pair"
+  shell: "/sbin/opendkim-genkey -r -h sha256 -D /etc/opendkim/keys/ -d {{ domains[0].main }} -s mail"
+  when: keycheck_result.stat.exists == false
+
+- name: "Apply the right permission to the keyfiles"
+  loop:
+    - "main.private"
+    - "main.txt"
+  file:
+    path: "/etc/opendkim/keys/{{ item }}"
+    owner: "opendkim"
+    group: "opendkim"
+
+- name: "Slurp dkim dns TXT record"
+  slurp:
+    src: "/etc/opendkim/keys/mail.txt"
+  register: txtrecord
+
+- name: "Display dkim dns TXT record file (beware \"\\t\" and \"\\n\")"
+  debug:
+    msg: "{{ txtrecord['content'] | b64decode }}"
+
+- name: "Pause to set and/or verify dkim txt dns record"
+  pause:
+
+# note:
+# this is not a proper way to handle multiple domains dkim
+# lead to do something more appropriate on arch wiki:
+# https://wiki.archlinux.org/index.php/OpenDKIM
+
+# improvements would be to properly extract and display HOST and VALUE fields
+# then wait_for the dns record to actually be propagated by testing it with
+# something like "host -t TXT myselector._domainkey.example.com"
+# or "dig +short myselector._domainkey.example.com TXT"
+
+- name: "Add key to KeyTable"
+  lineinfile:
+    path: "/etc/opendkim/KeyTable"
+    regexp: ":mail:"
+    line: "mail._domainkey.{{ domains[0].main }} {{ domains[0].main }}:mail:/etc/opendkim/keys/mail.private"
+    state: "present"
+  notify: "restart opendkim"
+
+- name: "Add key to SigningTable"
+  lineinfile:
+    path: "/etc/opendkim/SigningTable"
+    regexp: "^\\*@.*"
+    line: "*@{{ domains[0].main }} mail._domainkey.{{ domains[0].main }}"
+  notify: "restart opendkim"
+
+- name: "Copy opendkim configuration"
+  template:
+    src: "opendkim.conf"
+    dest: "/etc/opendkim.conf"
+    owner: "root"
+    group: "root"
+  notify: "restart opendkim"
+
+- name: "Enable and start opendkim"
+  service:
+    name: "opendkim"
+    state: "started"
+    enabled: yes

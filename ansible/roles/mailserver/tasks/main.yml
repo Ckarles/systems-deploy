@@ -8,3 +8,6 @@
   import_tasks: dovecot.yml
   tags: ['dovecot']
 
+- name: "Set up opendkim"
+  import_tasks: opendkim.yml
+  tags: ['dkim']
