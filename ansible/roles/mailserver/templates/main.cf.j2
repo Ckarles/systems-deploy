@@ -97,6 +97,8 @@ mydomain = {{ domains[0].main }}
 myorigin = $myhostname
 #myorigin = $mydomain
 
+smtp_helo_name = {{ domains[0].main }}
+
 # RECEIVING MAIL
 
 # The inet_interfaces parameter specifies the network interface
@@ -164,6 +166,9 @@ inet_protocols = all
 #mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
 mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain,
 	{{ domains[0].subs | join(', ') }}
+
+# Forcing a helo negotiation before client can trigger commands
+smtpd_helo_required = yes
 
 # REJECTING MAIL FOR UNKNOWN LOCAL USERS
 #
