@@ -691,6 +691,7 @@ smtpd_tls_key_file = /etc/letsencrypt/live/{{ domains[0].main }}/privkey.pem
 smtpd_tls_ciphers = high
 
 # milters
+# TODO replace inet sockets by UNIX sockets
 milter_default_action = accept
-smtpd_milters = inet:localhost:8891
-non_smtpd_milters = inet:localhost:8891
+smtpd_milters = inet:localhost:8891, inet:localhost:8893
+non_smtpd_milters = $smtpd_milters

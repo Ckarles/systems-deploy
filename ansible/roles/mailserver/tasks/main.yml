@@ -11,3 +11,7 @@
 - name: "Set up opendkim"
   import_tasks: opendkim.yml
   tags: ['dkim']
+
+- name: "Set up opendmarc"
+  import_tasks: opendmarc.yml
+  tags: ['dmarc']
