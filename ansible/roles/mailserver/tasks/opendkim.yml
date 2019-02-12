@@ -10,6 +10,9 @@
     path: "/etc/opendkim/keys/mail.private"
   register: keycheck_result
 
+# TODO add use a key rotation system and change dkim key every month
+# https://www.linode.com/docs/email/postfix/configure-spf-and-dkim-in-postfix-on-debian-9/#key-rotation
+
 - name: "Generate dkim key pair"
   shell: "/sbin/opendkim-genkey -r -h sha256 -D /etc/opendkim/keys/ -d {{ domains[0].main }} -s mail"
   when: keycheck_result.stat.exists == false
