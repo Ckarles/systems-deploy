@@ -22,9 +22,6 @@
     group: "root"
   notify: "restart spamass-milter"
 
-# TODO add cron to update spam detection rules every night
-# "CRON=1" in spamassassin's sysconfig ?
-
 - name: "Enable and start spamass-milter"
   service:
     name: "spamass-milter"
