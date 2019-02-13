@@ -19,8 +19,8 @@
 
 - name: "Apply the right permission to the keyfiles"
   loop:
-    - "main.private"
-    - "main.txt"
+    - "mail.private"
+    - "mail.txt"
   file:
     path: "/etc/opendkim/keys/{{ item }}"
     owner: "opendkim"
