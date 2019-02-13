@@ -23,3 +23,11 @@
   service:
     name: "opendmarc"
     state: "restarted"
+
+- name: "update spam rules"
+  shell: "sa-update"
+
+- name: "restart spamass-milter"
+  service:
+    name: "spamass-milter"
+    state: "restarted"

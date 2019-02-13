@@ -1,0 +1,76 @@
+---
+
+- name: "Install dovecot and pigeonhole packages"
+  loop:
+    - dovecot
+    - dovecot-pigeonhole
+  package:
+    state: "present"
+    name: "{{ item }}"
+
+- name: "Set mail location to \"~/Maildir\""
+  lineinfile:
+    path: "/etc/dovecot/conf.d/10-mail.conf"
+    regexp: "^#?mail_location ="
+    line: "mail_location = maildir:~/Maildir"
+    state: present
+  notify: "reload dovecot"
+
+# TODO loop the configuration installs
+
+- name: "Apply lda configuration"
+  template:
+    src: "15-lda.conf.j2"
+    dest: "/etc/dovecot/conf.d/15-lda.conf"
+  notify: "reload dovecot"
+    
+- name: "Apply ssl configuration"
+  template:
+    src: "10-ssl.conf.j2"
+    dest: "/etc/dovecot/conf.d/10-ssl.conf"
+  notify: "reload dovecot"
+
+- name: "Apply auth configuration"
+  template:
+    src: "10-auth.conf"
+    dest: "/etc/dovecot/conf.d/10-auth.conf"
+  notify: "reload dovecot"
+
+- name: "Apply master configuration"
+  template:
+    src: "10-master.conf"
+    dest: "/etc/dovecot/conf.d/10-master.conf"
+  notify: "reload dovecot"
+
+- name: "Apply sieve configuration"
+  template:
+    src: "90-sieve.conf"
+    dest: "/etc/dovecot/conf.d/90-sieve.conf"
+  notify: "reload dovecot"
+
+- name: "Create sieve-after directory"
+  file:
+    path: "/etc/dovecot/sieve-after"
+    state: "directory"
+
+- name: "Apply spam configuration"
+  template:
+    src: "spam-to-folder.sieve"
+    dest: "/etc/dovecot/sieve-after/spam-to-folder.sieve"
+
+- name: "Compile spam configuration"
+  shell: "sievec /etc/dovecot/sieve-after/spam-to-folder.sieve"
+  notify: "reload dovecot"
+
+- name: "Open port 993 in firewall"
+  firewalld:
+    service: "imaps"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
+- name: "Enable and start dovecot"
+  service:
+    name: "dovecot"
+    state: "started"
+    enabled: yes

@@ -1,0 +1,33 @@
+---
+
+- name: "Install spamassassin"
+  loop:
+    - "spamassassin"
+    - "spamass-milter"
+  package:
+    state: "present"
+    name: "{{ item }}"
+
+- name: "Append mail group to sa-milt user"
+  user:
+    name: "sa-milt"
+    groups: "mail"
+    append: yes
+
+- name: "Copy spamass-milter sysconfig"
+  template:
+    src: "spamass-milter"
+    dest: "/etc/sysconfig/spamass-milter"
+    owner: "root"
+    group: "root"
+  notify: "restart spamass-milter"
+
+# TODO add cron to update spam detection rules every night
+# "CRON=1" in spamassassin's sysconfig ?
+
+- name: "Enable and start spamass-milter"
+  service:
+    name: "spamass-milter"
+    state: "started"
+    enabled: yes
+  notify: "update spam rules"

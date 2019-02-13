@@ -15,3 +15,7 @@
 - name: "Set up opendmarc"
   import_tasks: opendmarc.yml
   tags: ['dmarc']
+
+- name: "Set up spamassassin"
+  import_tasks: spamassassin.yml
+  tags: ['spamassassin']
