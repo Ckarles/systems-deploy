@@ -28,6 +28,12 @@
     dest: "/etc/dovecot/conf.d/10-ssl.conf"
   notify: "reload dovecot"
 
+- name: "Apply auth configuration"
+  template:
+    src: "10-auth.conf"
+    dest: "/etc/dovecot/conf.d/10-auth.conf"
+  notify: "reload dovecot"
+
 - name: "Apply master configuration"
   template:
     src: "10-master.conf"
