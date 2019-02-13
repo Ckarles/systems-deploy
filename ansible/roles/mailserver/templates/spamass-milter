@@ -1,5 +1,5 @@
 ### Override for your different local config if necessary
-#SOCKET=/run/spamass-milter/spamass-milter.sock
+SOCKET=/var/run/spamass-milter/spamass-milter.sock
 
 ### You may add configuration parameters here, see spamass-milter(1)
 ###

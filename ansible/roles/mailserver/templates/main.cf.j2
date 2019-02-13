@@ -705,6 +705,6 @@ milter_default_action = accept
 # spamassassin macro definition
 milter_connect_macros = "i j {daemon_name} v {if_name} _"
 
-# TODO replace inet sockets by UNIX sockets
-smtpd_milters = inet:localhost:8891, inet:localhost:8893, unix:/run/spamass-milter/spamass-milter.sock
+# milters list
+smtpd_milters = unix:/var/run/opendkim/opendkim.sock, unix:/var/run/opendmarc/opendmarc.sock, unix:/var/run/spamass-milter/spamass-milter.sock
 non_smtpd_milters = $smtpd_milters
