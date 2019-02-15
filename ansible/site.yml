@@ -5,5 +5,7 @@
 
 # TODO remove all unecessary "become" OR "user=" && "group=" statements
 
+# TODO apply syntax convention for code regularity
+
 - import_playbook: webserver.yml
 - import_playbook: mailserver.yml
