@@ -11,7 +11,14 @@
   register: keycheck_result
 
 # TODO add use a key rotation system and change dkim key every month
+# *need DNS automation*
 # https://www.linode.com/docs/email/postfix/configure-spf-and-dkim-in-postfix-on-debian-9/#key-rotation
+# safe way of handling the switch:
+#   1. identify current key-pair
+#   2. generate new key-pair
+#   3. add dns
+#   4. switch key-pair and reload opendkim (current -> old && new -> current)
+#   5. remove old key-pair
 
 - name: "Generate dkim key pair"
   shell: "/sbin/opendkim-genkey -r -h sha256 -D /etc/opendkim/keys/ -d {{ domains[0].main }} -s mail"
