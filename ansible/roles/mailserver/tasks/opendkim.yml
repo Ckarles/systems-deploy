@@ -42,11 +42,13 @@
 # this is not a proper way to handle multiple domains dkim
 # lead to do something more appropriate on arch wiki:
 # https://wiki.archlinux.org/index.php/OpenDKIM
+# TODO multiple domain proper handling
 
 # improvements would be to properly extract and display HOST and VALUE fields
 # then wait_for the dns record to actually be propagated by testing it with
 # something like "host -t TXT myselector._domainkey.example.com"
 # or "dig +short myselector._domainkey.example.com TXT"
+# TODO replace "pause" module by "wait-for" DNS update
 
 - name: "Add key to KeyTable"
   lineinfile:
