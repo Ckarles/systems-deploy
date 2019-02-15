@@ -15,8 +15,8 @@
     append: yes
 
 - name: "Copy spamass-milter sysconfig"
-  template:
-    src: "spamass-milter"
+  copy:
+    src: "spamassassin/spamass-milter"
     dest: "/etc/sysconfig/spamass-milter"
     owner: "root"
     group: "root"

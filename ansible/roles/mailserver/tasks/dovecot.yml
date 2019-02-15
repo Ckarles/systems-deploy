@@ -8,43 +8,41 @@
     state: "present"
     name: "{{ item }}"
 
-- name: "Set mail location to \"~/Maildir\""
-  lineinfile:
-    path: "/etc/dovecot/conf.d/10-mail.conf"
-    regexp: "^#?mail_location ="
-    line: "mail_location = maildir:~/Maildir"
-    state: present
-  notify: "reload dovecot"
-
 # TODO loop the configuration installs
+
+- name: "Set mail location to \"~/Maildir\""
+  copy:
+    dest: "/etc/dovecot/conf.d/10-mail.conf"
+    src: "dovecot/10-mail.conf"
+  notify: "reload dovecot"
 
 - name: "Apply lda configuration"
   template:
-    src: "15-lda.conf.j2"
+    src: "dovecot/15-lda.conf.j2"
     dest: "/etc/dovecot/conf.d/15-lda.conf"
   notify: "reload dovecot"
     
 - name: "Apply ssl configuration"
   template:
-    src: "10-ssl.conf.j2"
+    src: "dovecot/10-ssl.conf.j2"
     dest: "/etc/dovecot/conf.d/10-ssl.conf"
   notify: "reload dovecot"
 
 - name: "Apply auth configuration"
-  template:
-    src: "10-auth.conf"
+  copy:
+    src: "dovecot/10-auth.conf"
     dest: "/etc/dovecot/conf.d/10-auth.conf"
   notify: "reload dovecot"
 
 - name: "Apply master configuration"
-  template:
-    src: "10-master.conf"
+  copy:
+    src: "dovecot/10-master.conf"
     dest: "/etc/dovecot/conf.d/10-master.conf"
   notify: "reload dovecot"
 
 - name: "Apply sieve configuration"
-  template:
-    src: "90-sieve.conf"
+  copy:
+    src: "dovecot/90-sieve.conf"
     dest: "/etc/dovecot/conf.d/90-sieve.conf"
   notify: "reload dovecot"
 
@@ -54,8 +52,8 @@
     state: "directory"
 
 - name: "Apply spam configuration"
-  template:
-    src: "spam-to-folder.sieve"
+  copy:
+    src: "dovecot/spam-to-folder.sieve"
     dest: "/etc/dovecot/sieve-after/spam-to-folder.sieve"
 
 - name: "Compile spam configuration"
