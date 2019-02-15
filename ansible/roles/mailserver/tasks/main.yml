@@ -1,6 +1,7 @@
 ---
 
 # TODO sort templates in dirs
+# TODO replace template(s) by copy(s) and put non-templates in files/
 
 - name: "Set up postfix"
   import_tasks: postfix.yml
