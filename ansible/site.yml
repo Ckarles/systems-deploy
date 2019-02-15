@@ -3,5 +3,7 @@
 # TODO replace all "start" tasks by restart handlers
 # handler orders are apparently dependent of handler definition order
 
+# TODO remove all unecessary "become" OR "user=" && "group=" statements
+
 - import_playbook: webserver.yml
 - import_playbook: mailserver.yml
