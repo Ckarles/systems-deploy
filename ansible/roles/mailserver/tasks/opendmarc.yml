@@ -19,8 +19,8 @@
     state: "directory"
 
 - name: "Apply systemd opendmarc configuration"
-  template:
-    src: "change_group.conf"
+  copy:
+    src: "service-chgrp.conf"
     dest: "/etc/systemd/system/opendmarc.service.d/change_group.conf"
   notify:
     - "systemd reload config"
