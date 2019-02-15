@@ -13,6 +13,19 @@
     group: "root"
   notify: "restart opendkim"
 
+- name: "Create dir for opendkim service configuration"
+  file:
+    path: "/etc/systemd/system/opendkim.service.d/"
+    state: "directory"
+
+- name: "Apply systemd opendkim configuration"
+  copy:
+    src: "service-chgrp.conf"
+    dest: "/etc/systemd/system/opendkim.service.d/change_group.conf"
+  notify:
+    - "systemd reload config"
+    - "restart opendkim"
+
 - name: "Check if a dkim key is already existing"
   stat:
     path: "/etc/opendkim/keys/mail.private"
