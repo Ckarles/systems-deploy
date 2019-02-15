@@ -1,5 +1,8 @@
 ---
 
+- name: "systemd reload config"
+  shell: "systemctl daemon-reload"
+
 - name: "newaliases"
 #  shell: "/usr/bin/newaliases.postfix"
   shell: "/sbin/postalias /etc/aliases"
