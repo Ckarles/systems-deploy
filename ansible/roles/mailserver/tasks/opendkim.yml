@@ -5,6 +5,14 @@
     state: "present"
     name: "opendkim"
 
+- name: "Copy opendkim configuration"
+  copy:
+    src: "opendkim/opendkim.conf"
+    dest: "/etc/opendkim.conf"
+    owner: "root"
+    group: "root"
+  notify: "restart opendkim"
+
 - name: "Check if a dkim key is already existing"
   stat:
     path: "/etc/opendkim/keys/mail.private"
@@ -70,14 +78,6 @@
     path: "/etc/opendkim/SigningTable"
     regexp: "^\\*@.*"
     line: "*@{{ domains[0].main }} mail._domainkey.{{ domains[0].main }}"
-  notify: "restart opendkim"
-
-- name: "Copy opendkim configuration"
-  copy:
-    src: "opendkim/opendkim.conf"
-    dest: "/etc/opendkim.conf"
-    owner: "root"
-    group: "root"
   notify: "restart opendkim"
 
 - name: "Enable and start opendkim"
