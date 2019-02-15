@@ -1,5 +1,7 @@
 ---
 
+# TODO sort templates in dirs
+
 - name: "Set up postfix"
   import_tasks: postfix.yml
   tags: ['postfix']
