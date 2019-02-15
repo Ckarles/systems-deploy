@@ -34,6 +34,8 @@
     dest: "/etc/dovecot/conf.d/10-auth.conf"
   notify: "reload dovecot"
 
+# TODO test root login for imap and smtp
+  
 - name: "Deny user root from authenticating"
   copy:
     src: "dovecot/deny-users"
