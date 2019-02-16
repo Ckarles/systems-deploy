@@ -1,0 +1,30 @@
+---
+#
+# users:
+#   - login: "john"
+#     password: '$6$xyz$XBnHHjn/R9qMKDSqwJOcAyzhc5xvIDciAwW9RlWhblDbP2hiD6RUDC1tMteRWGjDfGtqVDFczbTgDcqT01IIO0'
+#     is_admin: yes | no          # default to no
+#     shell: "/bin/bash"          # default to "/sbin/nologin"
+#     fullname: "John Carpenter"  # comment field of the unix user
+#     aliases:                    # mail aliases
+#       - "john498"
+#       - "john.carpenter"
+#     pubkeys: |                  # public keys to apply, one per line
+#       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDulfiGttGZxt+l+/Zzz1mqY087o6yLH5eL6ILvvSAaq33YwMsP5B1YyuXuA0xL/GI3BiaRcleJgetLpeABkk6zKilHzgV/PzACRUKMPtU/fQbEwNNMupMCJMNk2AhfpFXXfGPiMVSjC2O8FGgBr76+TigMPx2nzlq5xwL68dAHawqx8NKtZgz2yGk/Cd68J/nCtitBiuEPw+c7kHeh2tINrdf4p5MQk9dGT55kuvKYzE+QwQJ6v+wwlY8yUyi8/5WSvgXcYjmsGFO+NdWzFYkXndXU2L7aHY4TiGYAnaa4PAGBLiOLHj/4s7Yfya8L7X4midlALRC7gGKhO68N6euB My Super Key
+#       ssh-rsa ...
+
+
+# Important: At least one admin user should be defined (usually yours should be in the list too)
+#
+# Convention: the first admin user is the one to receive root's e-mails
+#
+# Be sure to use single quotes (e.g. 'my string') to avoid escape characters (\) in the password hash chain and the pubkey
+#
+# Note about the password field:
+#   - this field is required, but softly (it won't throw an error if it's empty), if ignored, brace for unforseen consequences!
+#   - to generate a password hash: "openssl passwd -6"
+#   - be aware that storing password hash is NOT SAFE and SHOULD BE ENCRYPTED
+#
+# Note: PLEASE DO NOT CREATE ROOT USER, you can change root password per host in host_vars
+
+users: "{{ vault_users }}"

@@ -1,0 +1,22 @@
+---
+
+# this tasks doesn't take care of old user cleanups
+#   (because I have no need for such functionnality atm)
+
+# TODO set root password
+
+- name: "Set admin users"
+  loop: "{{ users }}"
+  user:
+    name: "{{ item.login }}"
+    groups: "{{ 'wheel' if item.is_admin is defined and item.is_admin }}"
+    comment: "{{ item.fullname }}"
+    password: "{{ item.password }}"
+    shell: "{{ item.shell | default('/sbin/nologin', true) }}"
+    
+- name: "Deploy ssh key"
+  loop: "{{ users | selectattr('pubkeys', 'string') | list }}"
+  authorized_key:
+    user: "{{ item.login }}"
+    key: "{{ item.pubkeys }}"
+    exclusive: yes

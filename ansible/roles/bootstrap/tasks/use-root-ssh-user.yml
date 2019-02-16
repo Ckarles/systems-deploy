@@ -1,0 +1,11 @@
+---
+
+- name: "Change ssh connection to root on port 22"
+  set_fact:
+    target_ssh_port: "{{ ansible_port }}"
+    ansible_port: 22
+    ansible_user: "root"
+    ansible_password: "{{ host_passwords.root }}"
+
+- name: Gather facts
+  setup:

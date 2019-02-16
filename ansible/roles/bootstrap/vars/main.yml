@@ -1,4 +1,0 @@
----
-
-user_name: "{{ lookup('env', 'USER') }}"
-user_pubkey: "{{ lookup('file', '~/.ssh/remote_rsa.pub') }}"

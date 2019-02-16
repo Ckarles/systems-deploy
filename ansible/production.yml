@@ -2,10 +2,6 @@
 
 all:
   children:
-    webservers:
-      hosts:
-        satrapy:
-
     mailservers:
       hosts:
         satrapy:

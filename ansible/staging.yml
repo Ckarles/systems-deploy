@@ -6,10 +6,6 @@ all:
     tls_dry_run: "yes"
 
   children:
-    webservers:
-      hosts:
-        satrapy:
-
     mailservers:
       hosts:
         satrapy:

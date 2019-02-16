@@ -1,10 +1,18 @@
 ---
 
-- name: "install utilities"
-  import_tasks: install-utils.yml
+- name: "Set up ssh"
+  import_tasks: ssh.yml
+  tags: ['ssh']
+
+- name: "Set up unix users"
+  import_tasks: users.yml
+  tags: ['users']
+
+- name: "Install utilities"
+  import_tasks: utils.yml
   tags: ['utils']
 
-- name: "Update the system"
+- name: "Update system"
   import_tasks: update.yml
   tags: ['update']
 

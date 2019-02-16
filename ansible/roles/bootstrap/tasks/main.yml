@@ -1,9 +1,10 @@
 ---
 
 - name: "Generate kickstart configuration"
-  import_tasks: generate-kickstart.yml
+  import_tasks: "generate-kickstart.yml"
   tags: ['kickstart']
 
-- name: "Bootstrap target \"{{ inventory_hostname }}\""
-  import_tasks: bootstrap.yml
-  tags: ['bootstrap']
+- name: "Use root ssh user for"
+  when: use_ssh_root
+  import_tasks: "use-root-ssh-user.yml"
+  tags: ['always','use-ssh-root']
