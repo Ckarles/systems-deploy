@@ -3,8 +3,6 @@
 # this tasks doesn't take care of old user cleanups
 #   (because I have no need for such functionnality atm)
 
-# TODO set root password
-
 - name: "Set admin users"
   loop: "{{ users }}"
   user:
