@@ -1,20 +1,20 @@
 ---
 
-- name: reboot
+- name: "reboot"
   reboot:
 
-- name: restart services
+- name: "restart services"
   loop: "{{ services_to_restart.stdout_lines }}"
   service:
     name: "{{ item }}"
-    state: restarted
+    state: "restarted"
 
-- name: reload sshd
+- name: "reload sshd"
   service:
-    name: sshd
-    state: reloaded
+    name: "sshd"
+    state: "reloaded"
 
-- name: reload firewalld
+- name: "reload firewalld"
   service:
-    name: firewalld
-    state: reloaded
+    name: "firewalld"
+    state: "reloaded"

@@ -13,20 +13,17 @@
 - debug:
     msg: "{{ need_reboot.stdout_lines }}"
   changed_when: true
-  notify: reboot
+  notify: "reboot"
   when: need_reboot.rc == 1
 
 - block:
+  when: need_reboot.rc == 0
 
   - name: "Check if services needs to be restarted"
     shell: "needs-restarting -s"
     register: services_to_restart
-    notify:
-      - restart services
+    notify: "restart services"
 
   # consider using whitelist with needs_restart_list | intersect(whitelist)
   # or blacklist with needs_restart_list | difference(blacklist)
   # .. blacklist could also be used for services with specific restart procedure
-
-  when: need_reboot.rc == 0
-

@@ -6,7 +6,6 @@
     - use_ssh_root: no
 
   tasks:
-
     - name: "Check port {{ ansible_port }}"
       wait_for:
         port: "{{ ansible_port }}"
@@ -43,11 +42,3 @@
 
     - import_role:
         name: "bootstrap"
-
-#    - name: "Include bootstrap role"
-#      when:
-#        - checkDefaultPort_result is defined
-#        - checkDefaultPort_result.state is undefined
-#      include_role:
-#        name: "bootstrap"
-      

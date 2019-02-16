@@ -25,16 +25,12 @@
   template:
     src: "postfix/main.cf.j2"
     dest: "/etc/postfix/main.cf"
-    owner: "root"
-    group: "root"
   notify: "reload postfix"
 
 - name: "Copy postfix master configuration"
   copy:
     src: "postfix/master.cf"
     dest: "/etc/postfix/master.cf"
-    owner: "root"
-    group: "root"
   notify: "reload postfix"
 
 - name: "Open port 587 and 25 in firewall"
@@ -43,7 +39,7 @@
     - "smtp-submission"
   firewalld:
     service: "{{ item }}"
-    state: enabled
+    state: "enabled"
     immediate: yes
     permanent: yes
 

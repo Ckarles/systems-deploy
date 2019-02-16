@@ -4,11 +4,10 @@
 # Removing the said certificate and it's associated cron/timer task
 # IS NOT SUPPORTED
 
-
 - name: "Install Certbot"
   loop:
-    - certbot
-    - python2-certbot-nginx
+    - "certbot"
+    - "python2-certbot-nginx"
   package:
     name: "{{ item }}"
     state: "present"
@@ -16,7 +15,7 @@
 - name: "Check that Nginx is listening on port 80"
   shell: "ss -tlnp 'sport = :80' | tail -n +2 | awk '{print $6;}' | grep nginx"
   register: listening_process
-  changed_when: False
+  changed_when: false
   failed_when: listening_process.stdout_lines | length == 0
 
 - name: "Request certificates with certbot-2"
@@ -27,10 +26,10 @@
 
 - name: "Open port 443 in firewall"
   firewalld:
+    service: "https"
+    state: "enabled"
     immediate: yes
     permanent: yes
-    service: "https"
-    state: enabled
 
 - name: "Set only authentication with renew command"
   loop: "{{ domains }}"

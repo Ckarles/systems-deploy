@@ -2,15 +2,13 @@
 
 - name: "Install opendmarc"
   package:
-    state: "present"
     name: "opendmarc"
+    state: "present"
 
 - name: "Copy opendmarc configuration"
   template:
     src: "opendmarc.conf.j2"
     dest: "/etc/opendmarc.conf"
-    owner: "root"
-    group: "root"
   notify: "restart opendmarc"
 
 - name: "Create dir for opendmarc service configuration"

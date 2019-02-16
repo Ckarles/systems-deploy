@@ -1,21 +1,21 @@
 ---
 
 - name: "Set up postfix"
-  import_tasks: postfix.yml
+  import_tasks: "postfix.yml"
   tags: ['postfix']
  
 - name: "Set up dovecot"
-  import_tasks: dovecot.yml
+  import_tasks: "dovecot.yml"
   tags: ['dovecot']
 
 - name: "Set up opendkim"
-  import_tasks: opendkim.yml
+  import_tasks: "opendkim.yml"
   tags: ['dkim']
 
 - name: "Set up opendmarc"
-  import_tasks: opendmarc.yml
+  import_tasks: "opendmarc.yml"
   tags: ['dmarc']
 
 - name: "Set up spamassassin"
-  import_tasks: spamassassin.yml
+  import_tasks: "spamassassin.yml"
   tags: ['spamassassin']

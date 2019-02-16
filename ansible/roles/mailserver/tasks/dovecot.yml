@@ -5,15 +5,15 @@
     - dovecot
     - dovecot-pigeonhole
   package:
-    state: "present"
     name: "{{ item }}"
+    state: "present"
 
 # TODO loop the configuration installs
 
 - name: "Set mail location to \"~/Maildir\""
   copy:
-    dest: "/etc/dovecot/conf.d/10-mail.conf"
     src: "dovecot/10-mail.conf"
+    dest: "/etc/dovecot/conf.d/10-mail.conf"
   notify: "reload dovecot"
 
 - name: "Apply lda configuration"
@@ -71,7 +71,7 @@
 - name: "Open port 993 in firewall"
   firewalld:
     service: "imaps"
-    state: enabled
+    state: "enabled"
     immediate: yes
     permanent: yes
 

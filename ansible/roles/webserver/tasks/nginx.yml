@@ -14,6 +14,6 @@
 - name: "Open http port on firewall"
   firewalld:
     service: "http"
-    state: enabled
+    state: "enabled"
     immediate: yes
     permanent: yes

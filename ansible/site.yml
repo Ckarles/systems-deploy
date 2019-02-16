@@ -7,6 +7,6 @@
 
 # TODO apply syntax convention for code regularity
 
-- import_playbook: bootstrap.yml
+- import_playbook: "bootstrap.yml"
 
-- import_playbook: mailserver.yml
+- import_playbook: "mailserver.yml"

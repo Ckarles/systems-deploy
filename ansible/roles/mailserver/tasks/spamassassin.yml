@@ -5,8 +5,8 @@
     - "spamassassin"
     - "spamass-milter"
   package:
-    state: "present"
     name: "{{ item }}"
+    state: "present"
 
 - name: "Append mail group to sa-milt user"
   user:
@@ -18,8 +18,6 @@
   copy:
     src: "spamassassin/spamass-milter"
     dest: "/etc/sysconfig/spamass-milter"
-    owner: "root"
-    group: "root"
   notify: "restart spamass-milter"
 
 - name: "Enable and start spamass-milter"
