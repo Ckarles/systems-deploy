@@ -6,6 +6,3 @@
     ansible_port: 22
     ansible_user: "root"
     ansible_password: "{{ host_passwords.root }}"
-
-- name: Gather facts
-  setup:
