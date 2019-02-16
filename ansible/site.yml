@@ -3,10 +3,6 @@
 # TODO replace all "start" tasks by restart handlers
 # handler orders are apparently dependent of handler definition order
 
-# TODO remove all unecessary "become" OR "user=" && "group=" statements
-
-# TODO apply syntax convention for code regularity
-
 - import_playbook: "bootstrap.yml"
 
 - import_playbook: "mailserver.yml"
