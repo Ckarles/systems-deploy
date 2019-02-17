@@ -8,21 +8,13 @@
     state: "present"
     name: "{{ item }}"
 
-- name: "Redirect root mails to {{ username_on_remote.stdout }}"
-  lineinfile:
-    path: "/etc/aliases"
-    regexp: "^#?root:.*"
-    line: "root:\t\t{{ username_on_remote.stdout }}"
-    state: "present"
-  notify: "newaliases"
-
 - name: "Init aliases list with root's redirection"
   set_fact:
     aliases_string: "{{ 'root: ' ~ rootmail_user ~ '\n' }}"
   vars:
     rootmail_user: "{{ (users | selectattr('is_admin') | first ).login }}"
 
-- name: "test alias string generation"
+- name: "Add user aliases to list"
   set_fact:
     aliases_string: "{{ aliases_string ~ item.1 ~ ': ' ~ item.0.login ~ '\n' }}"
   loop: "{{ users | subelements('aliases', skip_missing=true) }}"
