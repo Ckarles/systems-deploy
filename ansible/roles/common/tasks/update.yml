@@ -16,14 +16,14 @@
   notify: "reboot"
   when: need_reboot.rc == 1
 
-- block:
-  when: need_reboot.rc == 0
+- when: need_reboot.rc == 0
+  block:
 
-  - name: "Check if services needs to be restarted"
-    shell: "needs-restarting -s"
-    register: services_to_restart
-    notify: "restart services"
+    - name: "Check if services needs to be restarted"
+      shell: "needs-restarting -s"
+      register: services_to_restart
+      notify: "restart services"
 
-  # consider using whitelist with needs_restart_list | intersect(whitelist)
-  # or blacklist with needs_restart_list | difference(blacklist)
-  # .. blacklist could also be used for services with specific restart procedure
+    # consider using whitelist with needs_restart_list | intersect(whitelist)
+    # or blacklist with needs_restart_list | difference(blacklist)
+    # .. blacklist could also be used for services with specific restart procedure
