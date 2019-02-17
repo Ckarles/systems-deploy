@@ -16,12 +16,17 @@
 
 - meta: flush_handlers
 
-- name: "forgetting root ssh connection"
-  when: use_ssh_root
+- name: "Forgetting root ssh connection"
+  when: use_ssh_root is defined and use_ssh_root
   set_fact:
     ansible_port: "{{ target_ssh_port }}"
     ansible_user: "{{ target_ssh_user }}"
     ansible_password: "{{ target_ssh_password }}"
+
+- name: "Pause to let the time to disable firewalls"
+  when: use_ssh_root is defined and use_ssh_root
+  pause:
+
 #
 ####
 
