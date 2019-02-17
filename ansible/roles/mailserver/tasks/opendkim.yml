@@ -59,7 +59,7 @@
 
 
 # TODO find another way to diaply the content of this file
-- name: "Display dkim dns TXT record file (beware \"\\t\" and \"\\n\")"
+- name: "Display dkim dns TXT record file (beware escaped characters, copy paste carefully)"
   debug:
     msg: "{{ txtrecord['content'] | b64decode }}"
 
