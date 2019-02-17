@@ -57,6 +57,8 @@
     src: "/etc/opendkim/keys/mail.txt"
   register: txtrecord
 
+
+# TODO find another way to diaply the content of this file
 - name: "Display dkim dns TXT record file (beware \"\\t\" and \"\\n\")"
   debug:
     msg: "{{ txtrecord['content'] | b64decode }}"
