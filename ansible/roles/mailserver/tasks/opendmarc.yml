@@ -5,6 +5,13 @@
     name: "opendmarc"
     state: "present"
 
+- name: "Set /var/run directory permission for socket group access"
+  file:
+    path: "/var/run/opendmarc"
+    state: "directory"
+    group: "mail"
+    mode: "710"
+
 - name: "Copy opendmarc configuration"
   template:
     src: "opendmarc/opendmarc.conf.j2"
