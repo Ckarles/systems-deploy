@@ -1,5 +1,11 @@
 ---
 
+####
+# note:
+# this block has to be executed in one go or the server won't be accessible
+# from ssh to continue
+#
+
 - name: "Set up ssh"
   import_tasks: "ssh.yml"
   tags: ['ssh']
@@ -7,6 +13,17 @@
 - name: "Set up unix users"
   import_tasks: "users.yml"
   tags: ['users']
+
+- meta: flush_handlers
+
+- name: "forgetting root ssh connection"
+  when: use_ssh_root
+  set_fact:
+    ansible_port: "{{ target_ssh_port }}"
+    ansible_user: "{{ target_ssh_user }}"
+    ansible_password: "{{ target_ssh_password }}"
+#
+####
 
 - name: "Install utilities"
   import_tasks: "utils.yml"
