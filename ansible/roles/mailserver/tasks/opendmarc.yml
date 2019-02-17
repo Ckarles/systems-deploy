@@ -7,7 +7,7 @@
 
 - name: "Copy opendmarc configuration"
   template:
-    src: "opendmarc.conf.j2"
+    src: "opendmarc/opendmarc.conf.j2"
     dest: "/etc/opendmarc.conf"
   notify: "restart opendmarc"
 
