@@ -1,0 +1,4 @@
+---
+
+# default convention for recipient_delimiter is always "+"
+recipient_delimiter: "+"

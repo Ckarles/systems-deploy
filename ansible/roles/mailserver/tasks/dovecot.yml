@@ -49,8 +49,8 @@
   notify: "reload dovecot"
 
 - name: "Apply sieve configuration"
-  copy:
-    src: "dovecot/90-sieve.conf"
+  template:
+    src: "dovecot/90-sieve.conf.j2"
     dest: "/etc/dovecot/conf.d/90-sieve.conf"
   notify: "reload dovecot"
 

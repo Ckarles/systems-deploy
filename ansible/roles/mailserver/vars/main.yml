@@ -1,3 +1,6 @@
 ---
 
 mail_domain: "mail.{{ domains[0].main }}"
+
+# recipient delimiter for "plus sign sub-adresses"
+recipient_delimiter: "-"
