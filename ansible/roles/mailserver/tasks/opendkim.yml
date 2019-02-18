@@ -59,19 +59,18 @@
     owner: "opendkim"
     group: "opendkim"
 
-- name: "Slurp dkim dns TXT record"
-  slurp:
-    src: "/etc/opendkim/keys/mail.txt"
+- name: "Slurp dkim txt dns record"
+  shell: 'cat /etc/opendkim/keys/mail.txt | tr -d "\n" | tr -d "\t" | sed -rn "s/(.*)INTXT\( (.*) \).*/\1 \2/p"'
   register: txtrecord
-
-
-# TODO find another way to diaply the content of this file
-- name: "Display dkim dns TXT record file (beware escaped characters, copy paste carefully)"
-  debug:
-    msg: "{{ txtrecord['content'] | b64decode }}"
 
 - name: "Pause to set and/or verify dkim txt dns record"
   pause:
+    prompt: |
+      DNS DKIM TXT RECORD:
+      ---
+      {{ txtrecord.stdout }}
+      ---
+      Press enter to continue
 
 # note:
 # this is not a proper way to handle multiple domains dkim
