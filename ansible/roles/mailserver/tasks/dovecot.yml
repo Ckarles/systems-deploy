@@ -8,32 +8,6 @@
     name: "{{ item }}"
     state: "present"
 
-# TODO loop the configuration installs
-
-- name: "Set mail location to \"~/Maildir\""
-  copy:
-    src: "dovecot/10-mail.conf"
-    dest: "/etc/dovecot/conf.d/10-mail.conf"
-  notify: "reload dovecot"
-
-- name: "Apply lda configuration"
-  template:
-    src: "dovecot/15-lda.conf.j2"
-    dest: "/etc/dovecot/conf.d/15-lda.conf"
-  notify: "reload dovecot"
-    
-- name: "Apply ssl configuration"
-  template:
-    src: "dovecot/10-ssl.conf.j2"
-    dest: "/etc/dovecot/conf.d/10-ssl.conf"
-  notify: "reload dovecot"
-
-- name: "Apply auth configuration"
-  copy:
-    src: "dovecot/10-auth.conf"
-    dest: "/etc/dovecot/conf.d/10-auth.conf"
-  notify: "reload dovecot"
-
 # TODO test root login for imap and smtp
   
 - name: "Deny user root from authenticating"
@@ -42,16 +16,24 @@
     dest: "/etc/dovecot/deny-users"
   notify: "reload dovecot"
 
-- name: "Apply master configuration"
+- name: "Copy dovecot static configuration"
   copy:
-    src: "dovecot/10-master.conf"
-    dest: "/etc/dovecot/conf.d/10-master.conf"
+    src: "dovecot/{{ item }}"
+    dest: "/etc/dovecot/conf.d/{{ item }}"
+  loop:
+    - "10-mail.conf"
+    - "10-auth.conf"
+    - "10-master.conf"
   notify: "reload dovecot"
 
-- name: "Apply sieve configuration"
+- name: "Apply dovecot generated config"
   template:
-    src: "dovecot/90-sieve.conf.j2"
-    dest: "/etc/dovecot/conf.d/90-sieve.conf"
+    src: "dovecot/{{ item }}.j2"
+    dest: "/etc/dovecot/conf.d/{{ item }}"
+  loop:
+    - "15-lda.conf"
+    - "10-ssl.conf"
+    - "90-sieve.conf"
   notify: "reload dovecot"
 
 - name: "Create sieve-after directory"
