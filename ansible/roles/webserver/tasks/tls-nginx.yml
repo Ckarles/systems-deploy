@@ -4,6 +4,8 @@
 # Removing the said certificate and it's associated cron/timer task
 # IS NOT SUPPORTED
 
+# TODO make tls creds web-server agnostic, by using role-defined variables to identify which method to use and pull deps and requirements accordingly. Maybe use 2 different tasks with/without nginx and call on of them dynamically. Needs to check if using tags would work with this configuration.
+
 - name: "Install Certbot"
   loop:
     - "certbot"
