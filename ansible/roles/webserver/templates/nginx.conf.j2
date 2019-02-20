@@ -66,6 +66,7 @@ http {
 
         ssl_certificate "/etc/letsencrypt/live/{{ domains[0].main }}/fullchain.pem";
         ssl_certificate_key "/etc/letsencrypt/live/{{ domains[0].main }}/privkey.pem";
+        
         # Load let's encrypt ssl configuration file
         include /etc/letsencrypt/options-ssl-nginx.conf;
 
