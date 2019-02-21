@@ -1,0 +1,125 @@
+---
+
+- name: "Install php7 \"remi\" repository"
+  package:
+    name: "http://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+
+- name: "Enable php7.3 repo"
+  shell: "yum-config-manager --enable remi-php73"
+
+- name: "Install utils requirements"
+  package:
+    name: "tar, bzip2"
+    state: "present"
+
+- name: "Install php and php modules"
+  package:
+    name: "php, php-fpm, php-gd, php-mbstring, php-process, php-xml, php-pecl-zip, php-pdo, php-intl, php-pecl-apcu, php-pecl-imagick"
+    state: "present"
+
+- name: "Set default php memory per script to 512M"
+  lineinfile:
+    path: "/etc/php.ini"
+    regexp: "^memory_limit = .*"
+    line: "memory_limit = 512M"
+    state: "present"
+  notify: "restart php-fpm"
+
+- name: "Copy fpm configuration"
+  copy:
+    src: "nextcloud-phpfpm.conf"
+    dest: "/etc/php-fpm.d/nextcloud.conf"
+  notify: "restart php-fpm"
+
+- name: "Give nginx access to php caches and session"
+  file:
+    path: "/var/lib/php/{{ item }}"
+    group: "nginx"
+  loop:
+    - "opcache"
+    - "session"
+    - "wsdlcache"
+
+- name: "Set selinux fcontext"
+  sefcontext:
+    setype: "httpd_sys_rw_content_t"
+    target: "/usr/share/nextcloud(/.*)?"
+
+- name: "Start and enable php-fpm"
+  service:
+    name: "php-fpm"
+    state: "started"
+    enabled: yes
+
+- name: "Get Nextcloud installed version (if any)"
+  shell: "php /usr/share/nextcloud/occ -V"
+  failed_when: false
+  register: occ_version 
+
+- name: "Apply nginx Vhost"
+  template:
+    src: "nextcloud-nginx.conf.j2"
+    dest: "/etc/nginx/conf.d/nextcloud.conf"
+  notify: "reload nginx"
+
+
+# TODO add a flag to force reinstall
+
+# when nextcloud is not installed (occ script missing)
+- block:
+
+    - name: "Create temp dir for install"
+      file:
+        path: "/tmp/nextcloud"
+        state: "directory"
+    
+    - name: "Download Nextcloud version {{ nextcloud_version }}"
+      get_url:
+        dest: "/tmp/nextcloud/"
+        url: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2"
+        checksum: "sha256:https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2.sha256"
+    
+    - name: "Unpack archive to nextcloud work folder"
+      unarchive:
+        src: "/tmp/nextcloud/nextcloud-{{ nextcloud_version }}.tar.bz2"
+        remote_src: yes
+        dest: "/usr/share"
+        owner: "nginx"
+        group: "nginx"
+
+    - name: "Create data directory"
+      file:
+        path: "/usr/share/nextcloud/data"
+        state: "directory"
+        owner: "nginx"
+        group: "nginx"
+
+    - name: "Call occ maintenance:install"
+      shell: >
+        /usr/bin/php
+        /usr/share/nextcloud/occ
+        maintenance:install
+        --no-interaction
+        --database "sqlite"
+        --database-name "nextcloud"
+        --admin-user "admin"
+        --admin-pass "{{ host_passwords.nx_admin }}"
+        --admin-email "webmaster@{{ domains[0].main }}"
+      become: yes
+      become_user: "nginx"
+  when: 
+    - occ_version.rc == 1
+    - occ_version.stdout is match("Could not open input file:*")
+
+- name: "Restore selinux context"
+  shell: "restorecon -vR /usr/share/nextcloud"
+
+- name: "Apply trusted domains configuration"
+  shell: >
+    /usr/bin/php
+    /usr/share/nextcloud/occ
+    config:system:set
+    trusted_domains 1
+    --value nx.{{ domains[0].main }}
+  become: yes
+  become_user: "nginx"
