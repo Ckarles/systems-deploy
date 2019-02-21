@@ -5,13 +5,6 @@
     name: "opendmarc"
     state: "present"
 
-- name: "Set /var/run directory permission for socket group access"
-  file:
-    path: "/var/run/opendmarc"
-    state: "directory"
-    group: "mail"
-    mode: "710"
-
 - name: "Copy opendmarc configuration"
   template:
     src: "opendmarc/opendmarc.conf.j2"
@@ -30,6 +23,13 @@
   notify:
     - "systemd reload config"
     - "restart opendmarc"
+
+- name: "Set right permissions to runtime directory"
+  lineinfile:
+    path: "/etc/tmpfiles.d/opendmarc.conf"
+    regex: "^D \/var\/run\/opendmarc"
+    line: "D /var/run/opendmarc 0711 opendmarc opendmarc -"
+    state: "present"
 
 - name: "Enable and start opendmarc"
   service:

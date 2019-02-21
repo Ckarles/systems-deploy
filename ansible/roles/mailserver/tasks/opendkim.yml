@@ -5,13 +5,6 @@
     name: "opendkim"
     state: "present"
 
-- name: "Set /var/run directory permission for socket group access"
-  file:
-    path: "/var/run/opendkim"
-    state: "directory"
-    group: "mail"
-    mode: "710"
-
 - name: "Copy opendkim configuration"
   copy:
     src: "opendkim/opendkim.conf"
@@ -30,6 +23,13 @@
   notify:
     - "systemd reload config"
     - "restart opendkim"
+
+- name: "Set right permissions to runtime directory"
+  lineinfile:
+    path: "/etc/tmpfiles.d/opendkim.conf"
+    regex: "^D \/var\/run\/opendkim"
+    line: "D /var/run/opendkim 0711 opendkim opendkim -"
+    state: "present"
 
 - name: "Check if a dkim key is already existing"
   stat:
