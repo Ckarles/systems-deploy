@@ -20,11 +20,14 @@
   changed_when: false
   failed_when: listening_process.stdout_lines | length == 0
 
+
+# TODO think about handling the --expand when adding new sub-domains to the list
 - name: "Request certificates with certbot-2"
   loop: "{{ domains }}"
   shell: "certbot -n certonly --nginx {{ dry_run_option }} -m {{ item.holder }} --agree-to --domains {{ ([item.main]) | union(item.subs) | join(',') }}"
   register: certbot_results
   changed_when: "'Certificate not yet due for renewal; no action taken.' not in certbot_results.stdout_lines"
+  notify: "reload nginx"
 
 - name: "Open port 443 in firewall"
   firewalld:
@@ -32,6 +35,8 @@
     state: "enabled"
     immediate: yes
     permanent: yes
+
+# TODO figure out if this renew command needs a nginx reload in case of cert changes
 
 - name: "Set only authentication with renew command"
   loop: "{{ domains }}"
