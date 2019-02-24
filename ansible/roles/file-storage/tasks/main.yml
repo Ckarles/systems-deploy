@@ -1,6 +1,8 @@
 ---
 
-# TODO install mysql OR postgres to replace sqlite as nextcloud database
+- name: "Set up mysql database"
+  import_tasks: "mysql.yml"
+  tags: ['mysql']
 
 - name: "Install Nextcloud"
   import_tasks: "nextcloud.yml"

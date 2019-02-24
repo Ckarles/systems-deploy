@@ -14,7 +14,7 @@
 
 - name: "Install php and php modules"
   package:
-    name: "php, php-fpm, php-gd, php-mbstring, php-process, php-xml, php-pecl-zip, php-pdo, php-intl, php-pecl-apcu, php-pecl-imagick"
+    name: "php, php-fpm, php-gd, php-mbstring, php-process, php-xml, php-pecl-zip, php-pdo, php-pecl-mysql, php-intl, php-pecl-apcu, php-pecl-imagick"
     state: "present"
 
 - name: "Set default php memory per script to 512M"
@@ -50,6 +50,27 @@
     name: "php-fpm"
     state: "started"
     enabled: yes
+
+- name: "Copy nextcloud mysql config"
+  copy:
+    src: "nextcloud-mysql.cnf"
+    dest: "/etc/my.cnf.d/nextcloud.cnf"
+  notify: "restart mariadb"
+
+- name: "Create nextcloud mysql database"
+  mysql_db:
+    name: "nextcloud"
+    login_password: "{{ host_passwords.mysql_root }}"
+    state: "present"
+
+- name: "Create nextcloud mysql user"
+  mysql_user:
+    login_password: "{{ host_passwords.mysql_root }}"
+    name: "nextcloud"
+    password: "{{ host_passwords.nx_mysql }}"
+    host: "localhost"
+    priv: "nextcloud.*:ALL"
+    state: "present"
 
 - name: "Get Nextcloud installed version (if any)"
   shell: "php /usr/share/nextcloud/occ -V"
@@ -108,8 +129,10 @@
         /usr/share/nextcloud/occ
         maintenance:install
         --no-interaction
-        --database "sqlite"
+        --database "mysql"
         --database-name "nextcloud"
+        --database-user "nextcloud"
+        --database-pass "{{ host_passwords.nx_mysql }}"
         --admin-user "admin"
         --admin-pass "{{ host_passwords.nx_admin }}"
         --admin-email "webmaster@{{ domains[0].main }}"
