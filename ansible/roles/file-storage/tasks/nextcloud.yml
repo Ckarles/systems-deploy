@@ -62,6 +62,14 @@
     dest: "/etc/nginx/conf.d/nextcloud.conf"
   notify: "reload nginx"
 
+# TODO handle updates by either:
+#   - automatic update: https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/occ_command.html#command-line-upgrade
+#       - trigger maintenance mode
+#       - add selinux temporary rw rule and apply it
+#       - launch the update
+#       - change default var "nextcloud_version"
+#   - manual update: https://docs.nextcloud.com/server/stable/admin_manual/maintenance/manual_upgrade.html
+#
 
 # TODO add a flag to force reinstall
 

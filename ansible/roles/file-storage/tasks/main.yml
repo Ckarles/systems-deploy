@@ -1,5 +1,7 @@
 ---
 
+# TODO install mysql OR postgres to replace sqlite as nextcloud database
+
 - name: "Install Nextcloud"
   import_tasks: "nextcloud.yml"
   tags: ['nextcloud']
