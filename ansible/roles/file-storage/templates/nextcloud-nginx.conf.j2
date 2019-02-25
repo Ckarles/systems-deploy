@@ -91,6 +91,34 @@ server {
     }
 
     location ~ ^\/(?:index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|ocs-provider\/.+|ocm-provider\/.+)\.php(?:$|\/) {
+
+        # CORS headers for webdav
+        set $test ""
+        if ($uri ~ ^\/remote\.php\/(?:web)?dav\/) {
+            set $test "webdav";
+        }
+
+        if ($request_method = 'OPTIONS') {
+            set $test "${test}+options"
+        }
+
+        if ($test ~ ^webdav) {
+
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            add_header 'Access-Control-Allow-Methods' 'GET, HEAD, POST, PUT, OPTIONS, MOVE, DELETE, COPY, LOCK, UNLOCK';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,X-Accept-Charset,X-Accept,origin,accept,if-match,destination,overwrite';
+            add_header 'Access-Control-Expose-Headers' 'ETag';
+            add_header 'Access-Control-Max-Age' 1728000;
+        }
+
+        if ($test = "webdav+options") {
+            add_header 'Content-Type' 'text/plain charset=UTF-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+
+        # Execute php
         fastcgi_split_path_info ^(.+?\.php)(\/.*|)$;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
