@@ -40,6 +40,7 @@
     - "session"
     - "wsdlcache"
 
+# TODO change to secure fcontext (to change when implementing update)
 - name: "Set selinux fcontext"
   sefcontext:
     setype: "httpd_sys_rw_content_t"
