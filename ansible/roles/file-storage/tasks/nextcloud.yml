@@ -40,12 +40,6 @@
     - "session"
     - "wsdlcache"
 
-# TODO change to secure fcontext (to change when implementing update)
-- name: "Set selinux fcontext"
-  sefcontext:
-    setype: "httpd_sys_rw_content_t"
-    target: "/usr/share/nextcloud(/.*)?"
-
 - name: "Start and enable php-fpm"
   service:
     name: "php-fpm"
@@ -72,6 +66,25 @@
     host: "localhost"
     priv: "nextcloud.*:ALL"
     state: "present"
+
+- name: "Create data directory"
+  file:
+    path: "/var/lib/nextcloud/data"
+    state: "directory"
+    owner: "nginx"
+    group: "nginx"
+
+- name: "Set selinux fcontext"
+  sefcontext:
+    setype: "httpd_sys_rw_content_t"
+    target: "{{ item }}"
+  loop:
+    - "/var/lib/nextcloud/data(/.*)?"
+    - "/usr/share/nextcloud/config(/.*)?"
+    - "/usr/share/nextcloud/apps(/.*)?"
+    - "/usr/share/nextcloud/.htaccess"
+    - "/usr/share/nextcloud/.user.ini"
+    - "/usr/share/nextcloud/3rdparty/aws/aws-sdk-php/src/data/logs(/.*)?"
 
 - name: "Get Nextcloud installed version (if any)"
   shell: "php /usr/share/nextcloud/occ -V"
@@ -117,19 +130,13 @@
         owner: "nginx"
         group: "nginx"
 
-    - name: "Create data directory"
-      file:
-        path: "/usr/share/nextcloud/data"
-        state: "directory"
-        owner: "nginx"
-        group: "nginx"
-
     - name: "Call occ maintenance:install"
       shell: >
         /usr/bin/php
         /usr/share/nextcloud/occ
         maintenance:install
         --no-interaction
+        --data-dir "/var/lib/nextcloud/data"
         --database "mysql"
         --database-name "nextcloud"
         --database-user "nextcloud"
@@ -144,7 +151,10 @@
     - occ_version.stdout is match("Could not open input file:*")
 
 - name: "Restore selinux context"
-  shell: "restorecon -vR /usr/share/nextcloud"
+  shell: "restorecon -vR {{ item }}"
+  loop:
+    - "/usr/share/nextcloud"
+    - "/var/lib/nextcloud/data"
 
 - name: "Apply trusted domains configuration"
   shell: >
