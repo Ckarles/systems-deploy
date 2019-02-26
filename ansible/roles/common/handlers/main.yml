@@ -1,5 +1,6 @@
 ---
 
+# TODO handle luks decryption during reboot
 - name: "reboot"
   reboot:
 

@@ -18,3 +18,5 @@
     user: "{{ item.login }}"
     key: "{{ item.pubkeys }}"
     exclusive: yes
+
+# TODO deploy ssh pubkeys of admins in root's authorized_keys
