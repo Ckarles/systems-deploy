@@ -1,0 +1,87 @@
+---
+
+# check if machine is up and running
+- name: "Check port {{ ansible_port }}"
+  wait_for:
+    port: "{{ ansible_port }}"
+    state: "started"
+    host: "{{ ansible_host }}"
+    connect_timeout: "5"
+    timeout: "5"
+  delegate_to: "localhost"
+  ignore_errors: yes
+  register: checkPort_result
+
+- name: "Declare machine as up and running"
+  when:
+    - checkPort_result is defined
+    - checkPort_result.state is defined
+  set_fact:
+    is_up: yes
+
+# check if machine is waiting for luks decryption
+- name: "Check port 222"
+  when: is_up is not defined
+  wait_for:
+    port: "222"
+    state: "started"
+    host: "{{ ansible_host }}"
+    connect_timeout: "5"
+    timeout: "5"
+  delegate_to: "localhost"
+  ignore_errors: yes
+  register: checkDropbear_result
+
+- block:
+    - name: "Prepare to decrypt luks devices"
+      set_fact:
+        is_waiting_decrypt: yes
+        ansible_port: 222
+    
+    - name: "Unlock luks devices"
+      shell: "unlock <<< {{ host_passwords.luks_passphrase }}"
+    
+    - name: "Reset ssh port to {{ target_ssh_port }}"
+      set_fact:
+        ansible_port: "{{ target_ssh_port }}"
+
+    # Wait until machine has finished booting
+    - name: "Check port {{ ansible_port }}"
+      wait_for:
+        port: "{{ ansible_port }}"
+        state: "started"
+        host: "{{ ansible_host }}"
+        connect_timeout: "5"
+        timeout: "20"
+      delegate_to: "localhost"
+      ignore_errors: yes
+      register: checkPort_result
+
+  when:
+    - checkDropbear_result is defined
+    - checkDropbear_result.state is defined
+
+- name: "Check port 22"
+  when:
+    - checkPort_result is defined
+    - checkPort_result.state is undefined
+  wait_for:
+    port: "22"
+    state: "started"
+    host: "{{ ansible_host }}"
+    connect_timeout: "5"
+    timeout: "5"
+  delegate_to: "localhost"
+  ignore_errors: yes
+  register: checkDefaultPort_result
+
+- name: "Trigger use of root ssh user"
+  set_fact:
+    use_ssh_root: yes
+    ansible_port: 22
+    ansible_user: "root"
+  when:
+    - checkDefaultPort_result is defined
+    - checkDefaultPort_result.state is defined
+    - checkPort_result is defined
+    - checkPort_result.state is undefined

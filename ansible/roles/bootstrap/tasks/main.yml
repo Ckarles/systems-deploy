@@ -1,11 +1,5 @@
 ---
 
-# TODO set up full disk encryption (luks + dropbear support)
 - name: "Generate kickstart configuration"
   import_tasks: "generate-kickstart.yml"
   tags: ['kickstart']
-
-- name: "Use root ssh user for"
-  when: use_ssh_root
-  import_tasks: "use-root-ssh-user.yml"
-  tags: ['always','use-ssh-root']

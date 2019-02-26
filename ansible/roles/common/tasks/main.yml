@@ -1,5 +1,12 @@
 ---
 
+- name: "Check different ssh port and take appropriate measures"
+  import_tasks: "check_ports.yml"
+  tags: ['always', 'checkport']
+
+- name: "Gather facts"
+  setup:
+
 ####
 # note:
 # this block has to be executed in one go or the server won't be accessible
@@ -21,7 +28,6 @@
   set_fact:
     ansible_port: "{{ target_ssh_port }}"
     ansible_user: "{{ target_ssh_user }}"
-    ansible_password: "{{ target_ssh_password }}"
 
 - name: "Pause to let the time to disable firewalls"
   when: use_ssh_root is defined and use_ssh_root

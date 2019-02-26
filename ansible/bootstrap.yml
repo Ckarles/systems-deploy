@@ -2,43 +2,6 @@
 
 - hosts: all
   gather_facts: no
-  vars:
-    - use_ssh_root: no
 
-  tasks:
-    - name: "Check port {{ ansible_port }}"
-      wait_for:
-        port: "{{ ansible_port }}"
-        state: "started"
-        host: "{{ ansible_host }}"
-        connect_timeout: "5"
-        timeout: "5"
-      delegate_to: "localhost"
-      ignore_errors: yes
-      register: checkPort_result
-
-    - name: "Check port 22"
-      when:
-        - checkPort_result is defined
-        - checkPort_result.state is undefined
-      wait_for:
-        port: "22"
-        state: "started"
-        host: "{{ ansible_host }}"
-        connect_timeout: "5"
-        timeout: "5"
-      delegate_to: "localhost"
-      ignore_errors: yes
-      register: checkDefaultPort_result
-
-    - name: "Trigger use of root ssh user"
-      set_fact:
-        use_ssh_root: yes
-      when:
-        - checkDefaultPort_result is defined
-        - checkDefaultPort_result.state is defined
-        - checkPort_result is defined
-        - checkPort_result.state is undefined
-
-    - import_role:
-        name: "bootstrap"
+  roles:
+    - bootstrap
