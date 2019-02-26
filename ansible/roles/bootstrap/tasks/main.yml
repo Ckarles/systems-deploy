@@ -1,5 +1,6 @@
 ---
 
+# TODO set up full disk encryption (luks + dropbear support)
 - name: "Generate kickstart configuration"
   import_tasks: "generate-kickstart.yml"
   tags: ['kickstart']
