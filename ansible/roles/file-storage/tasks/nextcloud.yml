@@ -130,6 +130,8 @@
         owner: "nginx"
         group: "nginx"
 
+# TODO clean downloaded archive after install
+
     - name: "Call occ maintenance:install"
       shell: >
         /usr/bin/php
