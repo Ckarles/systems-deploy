@@ -1,2 +1,1 @@
-use "-e use_ssh_root=true" to use root access (only works when sshd_config has not been applied yet).
 use "-e tls_dry_run=true" to simulate let's encrypt tls request.
