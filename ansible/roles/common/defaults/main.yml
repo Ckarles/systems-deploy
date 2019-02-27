@@ -1,3 +1,5 @@
 ---
 
-target_ssh_port: "{{ ansible_port }}"
+target_ssh_port: "{{ ansible_port | default(22) }}"
+target_ssh_user: "{{ ansible_user | default(lookup('env','USER')) }}"
+target_ssh_use_tty: "{{ ansible_ssh_use_tty | default(true) }}"

@@ -2,6 +2,7 @@
 
 - name: "Check different ssh port and take appropriate measures"
   import_tasks: "check_ports.yml"
+  become: no
   tags: ['always', 'checkport']
 
 - name: "Gather facts"
