@@ -30,7 +30,7 @@ clearpart --all --initlabel --drives=vda
 
 # Partitions list
 part /boot --size=500 --fstype=xfs
-part pv.1 --grow --encrypted --passphrase="test"
+part pv.1 --grow --encrypted --passphrase="{{ host_passwords.luks_passphrase }}"
 
 volgroup centos_{{ inventory_hostname }} pv.1
 logvol swap --recommended --vgname=centos_{{ inventory_hostname }} --name="swap"

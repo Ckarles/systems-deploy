@@ -44,9 +44,8 @@
         ansible_ssh_use_tty: no
     
     - name: "Unlock luks devices"
-      raw: "unlock <<< 'test'"
+      raw: "unlock <<< {{ host_passwords.luks_passphrase | quote }}"
       ignore_errors: yes
-      #{{ host_passwords.luks_passphrase | quote }}"
 
     - name: "Reset ssh port to {{ target_ssh_port }}"
       set_fact:
