@@ -37,7 +37,7 @@ logvol swap --recommended --vgname=centos_{{ inventory_hostname }} --name="swap"
 logvol / --size=1 --grow --fstype=xfs --vgname=centos_{{ inventory_hostname }} --name="root"
 
 # System bootloader configuration
-bootloader --location=mbr --boot-drive=vda --iscrypted --password={{ host_passwords.grub | password_hash('grub_pbkdf2_sha512') }}
+bootloader --location=mbr --boot-drive=vda
 
 # System services
 services --enabled="chronyd"
