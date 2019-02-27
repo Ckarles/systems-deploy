@@ -165,3 +165,5 @@
     --value nx.{{ domains[0].main }}
   become: yes
   become_user: "nginx"
+
+# TODO add smtp/sendmail configuration
