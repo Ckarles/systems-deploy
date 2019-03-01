@@ -1,6 +1,14 @@
 ---
 
-# TODO add dracut-crypt-ssh repo
+- name: "Set up extra repositories"
+  yum_repository:
+    name: "rbu-dracut-crypt-ssh"
+    file: "rbu-dracut-crypt-ssh-epel-7"
+    baseurl: "https://copr-be.cloud.fedoraproject.org/results/rbu/dracut-crypt-ssh/epel-7-$basearch/"
+    description: "Copr repo for dracut-crypt-ssh owned by rbu"
+    enabled: yes
+    gpgcheck: yes
+    skip_if_unavailable: yes
 
 - name: "Install/update packages"
   package:
