@@ -71,6 +71,7 @@
 
 - name: "Check port 22"
   when:
+    - is_up is not defined
     - checkPort_result is defined
     - checkPort_result.state is undefined
   wait_for:
