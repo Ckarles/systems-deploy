@@ -3,7 +3,7 @@
 # this tasks doesn't take care of old user cleanups
 #   (because I have no need for such functionnality atm)
 
-- name: "Set admin users"
+- name: "Set users"
   loop: "{{ users }}"
   user:
     name: "{{ item.login }}"
@@ -12,11 +12,15 @@
     password: "{{ item.password }}"
     shell: "{{ item.shell | default('/sbin/nologin', true) }}"
     
-- name: "Deploy ssh key"
+- name: "Deploy ssh key for each user"
   loop: "{{ users | selectattr('pubkeys', 'string') | list }}"
   authorized_key:
     user: "{{ item.login }}"
     key: "{{ item.pubkeys }}"
     exclusive: yes
 
-# TODO deploy ssh pubkeys of admins in root's authorized_keys
+- name: "Deploy ssh key for root user"
+  authorized_key:
+    user: "root"
+    key: "{{ users | selectattr('is_admin') | map(attribute='pubkeys') | join(\"\n\") }}"
+    exclusive: yes
