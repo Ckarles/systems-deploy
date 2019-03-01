@@ -86,6 +86,12 @@
     - "/usr/share/nextcloud/.user.ini"
     - "/usr/share/nextcloud/3rdparty/aws/aws-sdk-php/src/data/logs(/.*)?"
 
+- name: "Set selinux boolean"
+  seboolean:
+    name: "httpd_can_sendmail"
+    state: yes
+    persistent: yes
+
 - name: "Get Nextcloud installed version (if any)"
   shell: "php /usr/share/nextcloud/occ -V"
   failed_when: false
@@ -168,4 +174,19 @@
   become: yes
   become_user: "nginx"
 
-# TODO add smtp/sendmail configuration
+- name: "Apply mailing configuration"
+  shell: >
+    /usr/bin/php
+    /usr/share/nextcloud/occ
+    config:system:set
+    {{ item.name }}
+    --value {{ item.value }}
+  loop:
+    - { name: "mail_smtpmode", value: "smtp" }
+    - { name: "mail_from_address", value: "webmaster" }
+    - { name: "mail_domain", value: "{{ domains[0].main }}" }
+    - { name: "mail_smtphost", value: "{{ domains[0].main }}" }
+    - { name: "mail_smtpport", value: "586" }
+    - { name: "mail_smtpsecure", value: "tls" }
+  become: yes
+  become_user: "nginx"
