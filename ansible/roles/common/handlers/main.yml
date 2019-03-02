@@ -1,8 +1,8 @@
 ---
 
-# TODO handle luks decryption during reboot
-- name: "reboot"
-  reboot:
+- name: "import reboot handlers"
+  import_tasks: "reboot.yml"
+  listen: "reboot"
 
 - name: "restart services"
   loop: "{{ services_to_restart.stdout_lines }}"
