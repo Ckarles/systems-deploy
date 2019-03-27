@@ -1,5 +1,8 @@
 ---
 
+- name: "build initramfs"
+  shell: "dracut --force"
+
 - name: "import reboot handlers"
   import_tasks: "reboot.yml"
   listen: "reboot"

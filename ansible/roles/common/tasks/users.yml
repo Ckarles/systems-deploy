@@ -19,8 +19,9 @@
     key: "{{ item.pubkeys }}"
     exclusive: yes
 
-- name: "Deploy ssh key for root user"
+- name: "Deploy ssh keys for root user"
   authorized_key:
     user: "root"
     key: "{{ users | selectattr('is_admin') | map(attribute='pubkeys') | join(\"\n\") }}"
     exclusive: yes
+  notify: "build initramfs"
