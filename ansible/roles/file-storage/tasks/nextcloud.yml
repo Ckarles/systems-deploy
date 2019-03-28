@@ -31,14 +31,18 @@
     dest: "/etc/php-fpm.d/nextcloud.conf"
   notify: "restart php-fpm"
 
-- name: "Give nginx access to php caches and session"
-  file:
-    path: "/var/lib/php/{{ item }}"
-    group: "nginx"
+- name: "Give nginx access to php caches and session at boot"
   loop:
     - "opcache"
     - "session"
     - "wsdlcache"
+  lineinfile:
+    path: "/etc/tmpfiles.d/php-fpm.conf"
+    regex: "^D \/varz/lib\/php\/{{ item }}"
+    line: "D /var/lib/php/{{ item }} 0770 nginx nginx -"
+    state: "present"
+    create: yes
+  notify: "reload tmpfiles"
 
 - name: "Start and enable php-fpm"
   service:

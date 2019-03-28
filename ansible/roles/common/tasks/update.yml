@@ -19,6 +19,10 @@
 - when: need_reboot.rc == 0
   block:
 
+    - debug: "notify to reload tmpfiles"
+      changed_when: True
+      notify: "reload tmpfiles"
+
     - name: "Check if services needs to be restarted"
       shell: "needs-restarting -s"
       register: services_to_restart
