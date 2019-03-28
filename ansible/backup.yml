@@ -1,0 +1,70 @@
+---
+
+- hosts: "all"
+  gather_facts: yes
+  strategy: free
+
+  vars:
+    target_user: "{{ ansible_user | default(lookup('env','USER')) }}"
+
+  tasks:
+
+    - name: "Set current date"
+      set_fact:
+        backup_date: "{{ ansible_date_time.date }}"
+
+    - name: "Put Nextcloud in maintenance mode"
+      shell: >
+        /usr/bin/php
+        /usr/share/nextcloud/occ
+        maintenance:mode
+        --on
+      become: yes
+      become_user: "nginx"
+
+    - name: "Dump mysql databases"
+      shell: >
+        /usr/bin/mysqldump
+        -u root
+        -p'{{ host_passwords.mysql_root }}'
+        --add-drop-database
+        --all-databases
+        | bzip2
+        > /var/tmp/backup_{{ backup_date }}_databases.sql.bz2
+
+    - name: "Backup files"
+      archive:
+        dest: "/var/tmp/backup_{{ backup_date }}_files.tar.bz2"
+        exclude_path: "/home/*/.ssh"
+        format: "bz2"
+        owner: "{{ target_user }}"
+        path:
+          - "/home"
+          - "/var/lib/nextcloud/data"
+      become: yes
+
+    - name: "Remove maintenance mode"
+      shell: >
+        /usr/bin/php
+        /usr/share/nextcloud/occ
+        maintenance:mode
+        --off
+      become: yes
+      become_user: "nginx"
+
+    - name: "fetch backup"
+      fetch:
+        src: "/var/tmp/backup_{{ backup_date }}_{{ item }}"
+        dest: "{{ playbook_dir }}/../backup/backup_{{ inventory_hostname }}_{{ backup_date }}_{{ item }}"
+        flat: yes
+      loop:
+        - "databases.sql.bz2"
+        - "files.tar.bz2"
+
+    - name: "Clean remote backup files"
+      file:
+        path: "/var/tmp/backup_{{ ansible_date_time.date }}_{{ item }}.bz2"
+        state: "absent"
+      loop:
+        - "databases.sql"
+        - "files.tar"

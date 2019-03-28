@@ -1,3 +1,4 @@
+backup/
 kickstart/
 ansible/*.retry
 ansible/roles/*/templates/**/*.default
