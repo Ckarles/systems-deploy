@@ -25,3 +25,8 @@
 
 - name: "reload tmpfiles"
   shell: "systemd-tmpfiles --create --remove"
+
+- name: "reload fail2ban"
+  service:
+    name: "fail2ban"
+    state: "reloaded"
