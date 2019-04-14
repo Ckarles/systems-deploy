@@ -19,3 +19,7 @@
 - name: "Set up spamassassin"
   import_tasks: "spamassassin.yml"
   tags: ['spamassassin']
+
+- name: "Set up fail2ban mailserver config"
+  import_tasks: "fail2ban.yml"
+  tags: ['fail2ban']
