@@ -19,7 +19,8 @@
 - when: need_reboot.rc == 0
   block:
 
-    - debug: "notify to reload tmpfiles"
+    - debug:
+        msg: "notify to reload tmpfiles"
       changed_when: True
       notify: "reload tmpfiles"
 
