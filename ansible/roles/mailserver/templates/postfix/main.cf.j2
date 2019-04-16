@@ -693,6 +693,9 @@ smtpd_tls_auth_only = yes
 smtpd_sasl_security_options = noanonymous, noplaintext
 smtpd_sasl_tls_security_options = noanonymous
 
+smtpd_sender_login_maps = hash:/etc/postfix/sender_login_map
+smtpd_sender_restrictions = reject_authenticated_sender_login_mismatch
+
 smtpd_use_tls = yes
 smtpd_tls_ask_ccert = yes
 smtpd_tls_cert_file = /etc/letsencrypt/live/{{ domains[0].main }}/fullchain.pem

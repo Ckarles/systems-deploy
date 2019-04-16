@@ -14,9 +14,20 @@
   vars:
     rootmail_user: "{{ (users | selectattr('is_admin') | first ).login }}"
 
-- name: "Add user aliases to list"
+- name: "Init login map with root's mapping"
+  set_fact:
+    senders_string: "{{ 'root ' ~ item.login ~ '\n' }}"
+  loop: "{{ users | selectattr('is_admin') | list }}"
+
+- name: "Add users in senders map"
+  set_fact:
+    senders_string: "{{ senders_string ~ item.login ~ ' ' ~ item.login ~ '\n' }}"
+  loop: "{{ users }}"
+
+- name: "Add user-defined aliases to aliases list and senders map"
   set_fact:
     aliases_string: "{{ aliases_string ~ item.1 ~ ': ' ~ item.0.login ~ '\n' }}"
+    senders_string: "{{ senders_string ~ item.1 ~ ' ' ~ item.0.login ~ '\n' }}"
   loop: "{{ users | subelements('aliases', skip_missing=true) }}"
 
 - name: "Apply aliases list to /etc/aliases"
@@ -25,6 +36,14 @@
     path: "/etc/aliases"
     marker: "# {mark} USER-DEFINED ALIASES"
   notify: "newaliases"
+
+- name: "Apply login map to /etc/postfix/sender_login_map"
+  blockinfile:
+    create: yes
+    block: "{{ senders_string }}"
+    path: "/etc/postfix/sender_login_map"
+    marker: "# {mark} USER-DEFINED SENDERS"
+  notify: "postmap"
 
 - name: "Apply postfix main configuration"
   template:

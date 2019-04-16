@@ -7,6 +7,9 @@
 #  shell: "/usr/bin/newaliases.postfix"
   shell: "/sbin/postalias /etc/aliases"
 
+- name: "postmap"
+  shell: "/usr/sbin/postmap /etc/postfix/sender_login_map"
+
 - name: "reload postfix"
   service:
     name: "postfix"
