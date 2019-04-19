@@ -2,6 +2,6 @@
 
 - name: "Copy fail2ban config"
   copy:
-    src: "fail2ban.conf"
+    src: "fail2ban/fail2ban.conf"
     dest: "/etc/fail2ban/jail.d/mailserver.conf"
   notify: "reload fail2ban"
