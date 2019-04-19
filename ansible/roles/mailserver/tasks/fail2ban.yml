@@ -2,6 +2,9 @@
 
 - name: "Copy fail2ban config"
   copy:
-    src: "fail2ban/fail2ban.conf"
-    dest: "/etc/fail2ban/jail.d/mailserver.conf"
+    src: "fail2ban/{{ item.src }}"
+    dest: "/etc/fail2ban/{{ item.dest }}"
+  loop:
+    - { src: "jail.conf", dest: "jail.d/mailserver.conf" }
+    - { src: "postfix-bots_filter.conf" , dest: "filter.d/postfix-bots.conf"}
   notify: "reload fail2ban"
