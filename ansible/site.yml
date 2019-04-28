@@ -5,4 +5,5 @@
 
 - import_playbook: "bootstrap.yml"
 
+- import_playbook: "dockers.yml"
 - import_playbook: "mailserver.yml"

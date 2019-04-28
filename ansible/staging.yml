@@ -1,10 +1,6 @@
 ---
+
 all:
-  vars:
-
-    # do not actually request tls certificates
-    #tls_dry_run: "yes"
-
   children:
     docker-masters:
       hosts:

@@ -1,0 +1,7 @@
+---
+
+- hosts: docker-masters
+  gather_facts: no
+  become: yes
+  roles:
+    - common
