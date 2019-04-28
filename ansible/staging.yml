@@ -3,13 +3,13 @@ all:
   vars:
 
     # do not actually request tls certificates
-    tls_dry_run: "yes"
+    #tls_dry_run: "yes"
 
   children:
-    mailservers:
+    docker-masters:
       hosts:
-        satrapy:
+        dock-master:
 
   hosts:
-    satrapy:
-      ansible_host: "satrapy.kingdom"
+    dock-master:
+      ansible_host: "dock-master.kingdom"
