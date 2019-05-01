@@ -6,3 +6,17 @@
   loop:
     - "docker"
     - "docker-compose"
+
+- name: "Start and enable docker deamon"
+  service:
+    name: "docker"
+    state: "started"
+    enabled: yes
+
+- name: "Copy docker-compose config"
+  copy:
+    src: "docker-compose/{{ inventory_hostname }}.yml"
+    dest: "/etc/docker-compose.yml"
+
+- name: "Start containers"
+  shell: "docker-compose -f /etc/docker-compose.yml up -d"
