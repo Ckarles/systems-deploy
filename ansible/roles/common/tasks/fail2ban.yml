@@ -10,3 +10,9 @@
     src: "fail2ban.conf.j2"
     dest: "/etc/fail2ban/jail.d/10-common.conf"
   notify: "reload fail2ban"
+
+- name: "Start and enable fail2ban"
+  systemd:
+    name: "fail2ban"
+    state: "started"
+    enabled: yes
