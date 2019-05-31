@@ -30,6 +30,7 @@
     regex: "^D \/var\/run\/opendmarc"
     line: "D /var/run/opendmarc 0711 opendmarc opendmarc -"
     state: "present"
+  notify: "reload tmpfiles"
 
 - name: "Enable and start opendmarc"
   service:

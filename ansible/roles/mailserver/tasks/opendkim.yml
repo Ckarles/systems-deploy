@@ -30,6 +30,7 @@
     regex: "^D \/var\/run\/opendkim"
     line: "D /var/run/opendkim 0711 opendkim opendkim -"
     state: "present"
+  notify: "reload tmpfiles"
 
 - name: "Check if a dkim key is already existing"
   stat:
