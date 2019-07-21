@@ -12,7 +12,7 @@
 
 - debug:
     msg: "{{ need_reboot.stdout_lines }}"
-  changed_when: true
+  changed_when: True
   notify: "reboot"
   when: need_reboot.rc == 1
 

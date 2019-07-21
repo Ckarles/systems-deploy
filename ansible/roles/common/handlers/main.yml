@@ -3,9 +3,8 @@
 - name: "build initramfs"
   shell: "dracut --force"
 
-- name: "import reboot handlers"
-  import_tasks: "reboot.yml"
-  listen: "reboot"
+- name: "reboot"
+  include_tasks: "reboot.yml"
 
 - name: "restart services"
   loop: "{{ services_to_restart.stdout_lines }}"

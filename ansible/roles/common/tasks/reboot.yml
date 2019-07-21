@@ -4,7 +4,6 @@
   shell: "sleep 5 && reboot"
   async: 1
   poll: 0
-  listen: "reboot"
 
 # check if machine is waiting for luks decryption
 - name: "Check port 222"
@@ -17,7 +16,6 @@
   ignore_errors: yes
   delegate_to: "localhost"
   register: checkDropbear_result
-  listen: "reboot"
 
 - block:        
     - name: "Prepare to decrypt luks devices"
@@ -29,19 +27,16 @@
         ansible_port: 222
         ansible_user: "root"
         ansible_ssh_use_tty: no
-      listen: "reboot"
     
     - name: "Unlock luks devices"
       raw: "unlock <<< {{ host_passwords.luks_passphrase | quote }}"
       ignore_errors: yes
-      listen: "reboot"
     
     - name: "Reset ssh port to {{ target_ssh_port }}"
       set_fact:
         ansible_port: "{{ target_ssh_port }}"
         ansible_user: "{{ target_ssh_user }}"
         ansible_ssh_use_tty: "{{ target_ssh_use_tty }}"
-      listen: "reboot"
     
     # Wait until machine has finished booting
     - name: "Check port {{ ansible_port }}"
@@ -52,7 +47,6 @@
         connect_timeout: "5"
         timeout: "20"
       delegate_to: "localhost"
-      listen: "reboot"
     
   when:
     - checkDropbear_result is defined
