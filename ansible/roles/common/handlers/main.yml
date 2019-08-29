@@ -23,7 +23,7 @@
     state: "reloaded"
 
 - name: "reload tmpfiles"
-  shell: "systemd-tmpfiles --create --remove"
+  shell: "systemd-tmpfiles --create"
 
 - name: "reload fail2ban"
   service:
