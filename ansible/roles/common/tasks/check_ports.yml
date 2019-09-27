@@ -39,9 +39,11 @@
         target_ssh_port: "{{ target_ssh_port }}"
         target_ssh_user: "{{ target_ssh_user }}"
         target_ssh_use_tty: "{{ target_ssh_use_tty }}"
+        target_ssh_host_key_checking: "{{ target_ssh_host_key_checking }}"
         ansible_port: 222
         ansible_user: "root"
         ansible_ssh_use_tty: no
+        ansible_ssh_host_key_checking: no
     
     - name: "Unlock luks devices"
       raw: "unlock <<< {{ host_passwords.luks_passphrase | quote }}"
@@ -52,6 +54,7 @@
         ansible_port: "{{ target_ssh_port }}"
         ansible_user: "{{ target_ssh_user }}"
         ansible_ssh_use_tty: "{{ target_ssh_use_tty }}"
+        ansible_ssh_host_key_checking: "{{ target_ssh_host_key_checking }}"
 
     # Wait until machine has finished booting
     - name: "Check port {{ ansible_port }}"

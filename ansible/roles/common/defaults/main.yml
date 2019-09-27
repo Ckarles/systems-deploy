@@ -3,3 +3,4 @@
 target_ssh_port: "{{ ansible_port | default(22) }}"
 target_ssh_user: "{{ ansible_user | default(lookup('env','USER')) }}"
 target_ssh_use_tty: "{{ ansible_ssh_use_tty | default(true) }}"
+target_ssh_host_key_checking: "{{ ansible_ssh_host_key_checking | default(true) }}"
