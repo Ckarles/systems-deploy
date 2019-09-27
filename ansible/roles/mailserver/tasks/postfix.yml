@@ -57,6 +57,12 @@
     dest: "/etc/postfix/master.cf"
   notify: "reload postfix"
 
+- name: "Apply certbot --deploy-hook to reload postfix"
+  copy:
+    src: "postfix/certbot.deploy-hook.sh"
+    dest: "/etc/letsencrypt/renewal-hooks/deploy/020_postfix-reload"
+
+
 # TODO think about switching to smtps / tcp :465, considered to be the "new standard", which should have always been cause starttls is so vulnerable to mitm attacks...
 
 - name: "Open port 587 and 25 in firewall"

@@ -50,6 +50,11 @@
   shell: "sievec /etc/dovecot/sieve-after/spam-to-folder.sieve"
   notify: "reload dovecot"
 
+- name: "Apply certbot --deploy-hook to reload postfix"
+  copy:
+    src: "dovecot/certbot.deploy-hook.sh"
+    dest: "/etc/letsencrypt/renewal-hooks/deploy/030_dovecot-reload"
+
 - name: "Open port 993 in firewall"
   firewalld:
     service: "imaps"

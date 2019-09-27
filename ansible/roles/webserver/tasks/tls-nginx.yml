@@ -57,6 +57,16 @@
     dest: "/etc/nginx/nginx.conf"
   notify: "reload nginx"
 
+- name: "Create hooks directories"
+  file:
+    path: "/etc/letsencrypt/renewal-hooks/deploy/"
+    state: "directory"
+
+- name: "Apply certbot --deploy-hook to reload nginx"
+  copy:
+    src: "tls-nginx/certbot.deploy-hook.sh"
+    dest: "/etc/letsencrypt/renewal-hooks/deploy/010_nginx-reload"
+
 #- name: "Enable nginx.conf TLS server"
 #  replace:
 #    path: "/etc/nginx/nginx.conf"
