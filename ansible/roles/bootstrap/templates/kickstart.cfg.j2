@@ -1,14 +1,14 @@
 #version=DEVEL
 # System authorization information
-auth --enableshadow --passalgo=sha512
+#authselect [options]
 
 # Use cdrom installation media
 cdrom
 # use official repo to install required packages
-repo --name="CentOS" --baseurl="http://mirror.centos.org/centos/7/os/x86_64/"
+repo --name="AppStream" --baseurl="http://mirror.centos.org/centos/8/AppStream/x86_64/os/"
 
 # Use text install
-text
+cmdline
 
 # Keyboard layouts
 keyboard --vckeymap=us --xlayouts='us'
@@ -21,16 +21,18 @@ network  --hostname={{ inventory_hostname }}
 
 # Root password
 rootpw --iscrypted {{ host_passwords.root | password_hash('sha512_crypt') }}
+
 # System timezone
 timezone Europe/Amsterdam --isUtc
 
 ignoredisk --only-use=vda
 # Partition clearing information
-clearpart --all --initlabel --drives=vda
+clearpart --disklabel gpt --all --initlabel --drives=vda
 
 # Partitions list
+part biosboot --fstype=biosboot --size=1
 part /boot --size=500 --fstype=xfs
-part pv.1 --grow --encrypted --passphrase="{{ host_passwords.luks_passphrase }}"
+part pv.1 --grow --encrypted --luks-version luks2 --passphrase="{{ host_passwords.luks_passphrase }}"
 
 volgroup centos_{{ inventory_hostname }} pv.1
 logvol swap --recommended --vgname=centos_{{ inventory_hostname }} --name="swap"
@@ -39,6 +41,9 @@ logvol / --size=1 --grow --fstype=xfs --vgname=centos_{{ inventory_hostname }} -
 # System bootloader configuration
 bootloader --location=mbr --boot-drive=vda
 
+# Do not configure the X Window System
+skipx
+
 # System services
 services --enabled="chronyd"
 
@@ -46,11 +51,10 @@ services --enabled="chronyd"
 shutdown
 
 %packages
-@^minimal
-@core
+@^server-product-environment
 kernel
 chrony
-policycoreutils-python
+policycoreutils-python-utils
 yum-utils
 setroubleshoot-server
 
@@ -60,9 +64,12 @@ setroubleshoot-server
 # Install requirements (epel repo)
 yum install -y epel-release
 
-# Install dracut-crypt-ssh
-curl -o /etc/yum.repos.d/rbu-dracut-crypt-ssh-epel-7.repo https://copr.fedorainfracloud.org/coprs/rbu/dracut-crypt-ssh/repo/epel-7/rbu-dracut-crypt-ssh-epel-7.repo
-yum install -y dracut-crypt-ssh
+# Install dracut-sshd
+curl -o /etc/yum.repos.d/gsauthof-dracut-sshd-epel-8.repo https://copr.fedorainfracloud.org/coprs/gsauthof/dracut-sshd/repo/epel-8/gsauthof-dracut-sshd-epel-8.repo
+yum install -y dracut-sshd
+
+# Add dracut-sshd configuration
+echo 'SSHD_OPTS="-p 222"' >> /etc/sysconfig/dracut-sshd
 
 # Add ssh public keys
 mkdir -m 600 /root/.ssh
@@ -70,11 +77,15 @@ cat >/root/.ssh/authorized_keys <<EOF
 {{ users | selectattr('is_admin') | join("\n", 'pubkeys') }}
 EOF
 
+# Manually generate host ssh keypairs (for first boot)
+ssh-keygen -A
+
 # generate initramfs
 dracut --force --kver $(rpm -qa kernel | cut -d'-' -f2-)
 
 # Add grub configuration for dracut-crypt-ssh
 sed -i -E 's/(GRUB_CMDLINE_LINUX=\".*)\"/\1 rd\.neednet=1 ip=dhcp\"/' /etc/default/grub
+grub2-editenv - unset kernelopts
 grub2-mkconfig --output /etc/grub2.cfg
 
 %end

@@ -2,10 +2,10 @@
 
 - name: "Set up extra repositories"
   yum_repository:
-    name: "rbu-dracut-crypt-ssh"
-    file: "rbu-dracut-crypt-ssh-epel-7"
-    baseurl: "https://copr-be.cloud.fedoraproject.org/results/rbu/dracut-crypt-ssh/epel-7-$basearch/"
-    description: "Copr repo for dracut-crypt-ssh owned by rbu"
+    name: "gsauthof-dracut-sshd"
+    file: "gsauthof-dracut-sshd-epel-8"
+    baseurl: "https://copr-be.cloud.fedoraproject.org/results/gsauthof/dracut-sshd/epel-8-$basearch/"
+    description: "Copr repo for dracut-sshd owned by gsauthof"
     enabled: yes
     gpgcheck: yes
     skip_if_unavailable: yes
@@ -16,7 +16,7 @@
     state: "present"
   loop:
     - "epel-release"
-    - "dracut-crypt-ssh"
+    - "dracut-sshd"
     - "vim"
     - "screen"
     - "bash-completion"
