@@ -66,6 +66,7 @@
   copy:
     src: "tls-nginx/certbot.deploy-hook.sh"
     dest: "/etc/letsencrypt/renewal-hooks/deploy/010_nginx-reload"
+    mode: "755"
 
 #- name: "Enable nginx.conf TLS server"
 #  replace:

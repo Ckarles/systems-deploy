@@ -54,6 +54,7 @@
   copy:
     src: "dovecot/certbot.deploy-hook.sh"
     dest: "/etc/letsencrypt/renewal-hooks/deploy/030_dovecot-reload"
+    mode: "755"
 
 - name: "Open port 993 in firewall"
   firewalld:

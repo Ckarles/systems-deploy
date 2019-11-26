@@ -61,6 +61,7 @@
   copy:
     src: "postfix/certbot.deploy-hook.sh"
     dest: "/etc/letsencrypt/renewal-hooks/deploy/020_postfix-reload"
+    mode: "755"
 
 
 # TODO think about switching to smtps / tcp :465, considered to be the "new standard", which should have always been cause starttls is so vulnerable to mitm attacks...
