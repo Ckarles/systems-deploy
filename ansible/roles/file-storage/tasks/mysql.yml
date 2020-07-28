@@ -16,6 +16,8 @@
     user: "root"
     password: "{{ host_passwords.mysql_root }}"
     host: "localhost"
+  # TODO: remove ignore_errors=yes and implement that:
+  # MySQL server installs with default login_user of ‘root’ and no password. To secure this user as part of an idempotent playbook, you must create at least two tasks: the first must change the root user’s password, without providing any login_user/login_password details. The second must drop a ~/.my.cnf file containing the new root credentials. Subsequent runs of the playbook will then succeed by reading the new credentials from the file.
   ignore_errors: yes
 
 - name: "Deletes anonymous MySQL server user"
